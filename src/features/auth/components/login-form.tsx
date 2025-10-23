@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { authClient } from '@/lib/auth-client';
+import Image from "next/image";
 
 const loginSchema = z.object({
     email: z.email("Please enter a valid email address"),
@@ -66,12 +67,12 @@ const LoginForm = () => {
                     <CardTitle>Welcome back</CardTitle>
                     <CardDescription>Login to continue</CardDescription>
                 </CardHeader>
-                <CardContent className='flex justify-center'>
-                    <form className='w-1/2' id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
+                <CardContent>
+                    <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
                         <div className='grid gap-6'>
                             <div className="flex flex-col gap-4">
                                 <Button variant="outline" className='w-full cursor-pointer' type='button' disabled={isPending} >
-                                    Continue with Github
+                                    <Image src="/github.svg" alt="github" width={20} height={20} /> Continue with Github
                                 </Button>
                             </div>
                             <FieldGroup className='grid gap-6'>
@@ -113,7 +114,7 @@ const LoginForm = () => {
                     </form>
                 </CardContent>
                 <CardContent className='flex flex-col gap-4 items-center'>
-                    <Button disabled={isPending} className='w-1/2' type="submit" form="login-form">Login</Button>
+                    <Button disabled={isPending} className="w-full" type="submit" form="login-form">Login</Button>
                     <div className='text-center text-sm'>
                         Don't have an account? <Link href="/signup" className='underline underline-offset-4' >Sign up</Link>
                     </div>
