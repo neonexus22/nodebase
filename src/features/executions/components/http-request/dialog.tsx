@@ -36,6 +36,11 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 const formSchema = z.object({
+    variableName: z.string()
+        .min(1, { message: "Variable name is required" })
+        .regex(/^[A-Za-z_$][A-Za-z0-9_$]*$/, {
+            message: "Variable name must start with a letter or underscore and contains only letters, numbers and underscores"
+        }),
     endpoint: z.url({ message: "Please enter a valid url" }),
     method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
     body: z.string().optional()
@@ -61,6 +66,7 @@ export const HttpRequestDialog = ({
     const form = useForm<HttpRequestFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            variableName: defaultValues.variableName || "",
             endpoint: defaultValues.endpoint || "",
             method: defaultValues.method || "GET",
             body: defaultValues.body || "",
@@ -70,13 +76,15 @@ export const HttpRequestDialog = ({
     useEffect(() => {
         if (open) {
             form.reset({
+                variableName: defaultValues.variableName || "",
                 endpoint: defaultValues.endpoint || "",
                 method: defaultValues.method || "GET",
                 body: defaultValues.body || "",
             })
         }
-    }, [open, defaultValues.endpoint, defaultValues.method, defaultValues.body, form]);
+    }, [open, defaultValues.endpoint, defaultValues.method, defaultValues.body, defaultValues.variableName, form]);
 
+    const watchVariableName = form.watch("variableName") || "myApiCall";
     const watchMethod = form.watch("method");
     const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
@@ -88,7 +96,7 @@ export const HttpRequestDialog = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
+            <DialogContent >
                 <DialogHeader>
                     <DialogTitle>HTTP Request</DialogTitle>
                     <DialogDescription>
@@ -96,9 +104,35 @@ export const HttpRequestDialog = ({
                     </DialogDescription>
                 </DialogHeader>
                 <form id="form-http-request" onSubmit={form.handleSubmit(handleSubmit)}
-                    className="space-y-8 mt-4 h-[calc(100vh-200px)] overflow-y-auto"
+                    className="space-y-8 mt-4 h-fit overflow-y-auto"
                 >
                     <FieldGroup>
+                        <Controller
+                            name="variableName"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <div className="flex flex-col space-y-1.5">
+                                        <FieldLabel htmlFor="form-http-request-variableName">
+                                            Variable Name
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-http-request-variableName"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="myApiCall"
+                                        />
+                                        <FieldDescription className="text-xs">
+                                            Use this name to reference the result in other nodes:{" "}
+                                            {`{{${watchVariableName}.httpResponse.data}}`}
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError className="text-xs" errors={[fieldState.error]} />
+                                        )}
+                                    </div>
+                                </Field>
+                            )}
+                        />
                         <Controller
                             name="method"
                             control={form.control}
@@ -148,13 +182,13 @@ export const HttpRequestDialog = ({
                                         aria-invalid={fieldState.invalid}
                                         placeholder="http://api.example.com/users/{{httpResponse.data.id}}"
                                     />
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
                                     <FieldDescription className="text-xs">
                                         Static URL or use {"{{variables}}"} for simple values or
                                         {"{{json variable}}"} to stringify objects
                                     </FieldDescription>
+                                    {fieldState.invalid && (
+                                        <FieldError className="text-xs" errors={[fieldState.error]} />
+                                    )}
                                 </Field>
                             )}
                         />
@@ -193,7 +227,6 @@ export const HttpRequestDialog = ({
                     </DialogFooter>
                 </form>
             </DialogContent>
-
         </Dialog>
     )
 }
