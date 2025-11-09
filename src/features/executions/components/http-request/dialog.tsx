@@ -42,49 +42,45 @@ const formSchema = z.object({
     // .refine() TODO
 })
 
-export type HttpFormType = z.infer<typeof formSchema>;
+export type HttpRequestFormValues = z.infer<typeof formSchema>;
 
 interface Props {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    onSubmit: (values: HttpFormType) => void;
-    defaultEndpoint?: string;
-    defaultMethod?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-    defaultBody?: string;
+    onSubmit: (values: HttpRequestFormValues) => void;
+    defaultValues?: Partial<HttpRequestFormValues>
 }
 
 export const HttpRequestDialog = ({
     open,
     onOpenChange,
     onSubmit,
-    defaultEndpoint = "",
-    defaultMethod = "GET",
-    defaultBody = ""
+    defaultValues = {}
 }: Props) => {
 
-    const form = useForm<HttpFormType>({
+    const form = useForm<HttpRequestFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            endpoint: defaultEndpoint,
-            method: defaultMethod,
-            body: defaultBody,
+            endpoint: defaultValues.endpoint || "",
+            method: defaultValues.method || "GET",
+            body: defaultValues.body || "",
         }
     })
 
     useEffect(() => {
         if (open) {
             form.reset({
-                endpoint: defaultEndpoint,
-                method: defaultMethod,
-                body: defaultBody
+                endpoint: defaultValues.endpoint || "",
+                method: defaultValues.method || "GET",
+                body: defaultValues.body || "",
             })
         }
-    }, [open, defaultEndpoint, defaultMethod, defaultBody, form]);
+    }, [open, defaultValues.endpoint, defaultValues.method, defaultValues.body, form]);
 
     const watchMethod = form.watch("method");
     const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod);
 
-    const handleSubmit = (values: HttpFormType) => {
+    const handleSubmit = (values: HttpRequestFormValues) => {
         console.log("testing", values)
         onSubmit(values);
         onOpenChange(false)
