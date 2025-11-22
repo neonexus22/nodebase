@@ -96,7 +96,7 @@ export const HttpRequestDialog = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent >
+            <DialogContent className="max-h-11/12">
                 <DialogHeader>
                     <DialogTitle>HTTP Request</DialogTitle>
                     <DialogDescription>
@@ -104,124 +104,126 @@ export const HttpRequestDialog = ({
                     </DialogDescription>
                 </DialogHeader>
                 <form id="form-http-request" onSubmit={form.handleSubmit(handleSubmit)}
-                    className="space-y-8 mt-4 h-fit overflow-y-auto"
+                    className="space-y-8 mt-4 h-full"
                 >
-                    <FieldGroup>
-                        <Controller
-                            name="variableName"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <div className="flex flex-col space-y-1.5">
-                                        <FieldLabel htmlFor="form-http-request-variableName">
-                                            Variable Name
-                                        </FieldLabel>
-                                        <Input
-                                            {...field}
-                                            id="form-http-request-variableName"
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder="myApiCall"
-                                        />
-                                        <FieldDescription className="text-xs">
-                                            Use this name to reference the result in other nodes:{" "}
-                                            {`{{${watchVariableName}.httpResponse.data}}`}
-                                        </FieldDescription>
-                                        {fieldState.invalid && (
-                                            <FieldError className="text-xs" errors={[fieldState.error]} />
-                                        )}
-                                    </div>
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="method"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-http-request-method">
-                                        Method
-                                    </FieldLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                    >
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Select a method" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Fruits</SelectLabel>
-                                                <SelectItem value="GET">GET</SelectItem>
-                                                <SelectItem value="POST">POST</SelectItem>
-                                                <SelectItem value="PUT">PUT</SelectItem>
-                                                <SelectItem value="PATCH">PATCH</SelectItem>
-                                                <SelectItem value="DELETE">DELETE</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                    {fieldState.invalid && (
-                                        <FieldError errors={[fieldState.error]} />
-                                    )}
-                                    <FieldDescription className="text-xs">
-                                        The HTTP method to use for this request
-                                    </FieldDescription>
-                                </Field>
-                            )}
-                        />
-                        <Controller
-                            name="endpoint"
-                            control={form.control}
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor="form-http-request-endpoint">
-                                        Endpoint URL
-                                    </FieldLabel>
-                                    <Input
-                                        {...field}
-                                        id="form-http-request-endpoint"
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="http://api.example.com/users/{{httpResponse.data.id}}"
-                                    />
-                                    <FieldDescription className="text-xs">
-                                        Static URL or use {"{{variables}}"} for simple values or
-                                        {"{{json variable}}"} to stringify objects
-                                    </FieldDescription>
-                                    {fieldState.invalid && (
-                                        <FieldError className="text-xs" errors={[fieldState.error]} />
-                                    )}
-                                </Field>
-                            )}
-                        />
-                        {showBodyField && (
+                    <div className="max-h-3/5 overflow-y-auto">
+                        <FieldGroup>
                             <Controller
-                                name="body"
+                                name="variableName"
                                 control={form.control}
                                 render={({ field, fieldState }) => (
                                     <Field data-invalid={fieldState.invalid}>
-                                        <FieldLabel htmlFor="form-http-request-body">
-                                            Request Body
+                                        <div className="flex flex-col space-y-1.5">
+                                            <FieldLabel htmlFor="form-http-request-variableName">
+                                                Variable Name
+                                            </FieldLabel>
+                                            <Input
+                                                {...field}
+                                                id="form-http-request-variableName"
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder="myApiCall"
+                                            />
+                                            <FieldDescription className="text-xs">
+                                                Use this name to reference the result in other nodes:{" "}
+                                                {`{{${watchVariableName}.httpResponse.data}}`}
+                                            </FieldDescription>
+                                            {fieldState.invalid && (
+                                                <FieldError className="text-xs" errors={[fieldState.error]} />
+                                            )}
+                                        </div>
+                                    </Field>
+                                )}
+                            />
+                            <Controller
+                                name="method"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-http-request-method">
+                                            Method
                                         </FieldLabel>
-                                        <Textarea
-                                            {...field}
-                                            id="form-http-request-body"
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder={
-                                                `{\n"userId": "{{httpResponse.data.id}}",\n"name": "{{httpResponse.data.name}}",\n"items": "{{httpResponse.data.items}}"\n}`
-                                            }
-                                            className="min-h-[120px] font-mono text-sm"
-                                        />
+                                        <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select a method" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Fruits</SelectLabel>
+                                                    <SelectItem value="GET">GET</SelectItem>
+                                                    <SelectItem value="POST">POST</SelectItem>
+                                                    <SelectItem value="PUT">PUT</SelectItem>
+                                                    <SelectItem value="PATCH">PATCH</SelectItem>
+                                                    <SelectItem value="DELETE">DELETE</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                         {fieldState.invalid && (
                                             <FieldError errors={[fieldState.error]} />
                                         )}
                                         <FieldDescription className="text-xs">
-                                            JSON with template variables. Use {"{{variables}}"}
-                                            for simple values or {"{{json variables}}"} to strigify objects
+                                            The HTTP method to use for this request
                                         </FieldDescription>
                                     </Field>
                                 )}
                             />
-                        )}
-                    </FieldGroup>
+                            <Controller
+                                name="endpoint"
+                                control={form.control}
+                                render={({ field, fieldState }) => (
+                                    <Field data-invalid={fieldState.invalid}>
+                                        <FieldLabel htmlFor="form-http-request-endpoint">
+                                            Endpoint URL
+                                        </FieldLabel>
+                                        <Input
+                                            {...field}
+                                            id="form-http-request-endpoint"
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="http://api.example.com/users/{{httpResponse.data.id}}"
+                                        />
+                                        <FieldDescription className="text-xs">
+                                            Static URL or use {"{{variables}}"} for simple values or
+                                            {"{{json variable}}"} to stringify objects
+                                        </FieldDescription>
+                                        {fieldState.invalid && (
+                                            <FieldError className="text-xs" errors={[fieldState.error]} />
+                                        )}
+                                    </Field>
+                                )}
+                            />
+                            {showBodyField && (
+                                <Controller
+                                    name="body"
+                                    control={form.control}
+                                    render={({ field, fieldState }) => (
+                                        <Field data-invalid={fieldState.invalid}>
+                                            <FieldLabel htmlFor="form-http-request-body">
+                                                Request Body
+                                            </FieldLabel>
+                                            <Textarea
+                                                {...field}
+                                                id="form-http-request-body"
+                                                aria-invalid={fieldState.invalid}
+                                                placeholder={
+                                                    `{\n"userId": "{{httpResponse.data.id}}",\n"name": "{{httpResponse.data.name}}",\n"items": "{{httpResponse.data.items}}"\n}`
+                                                }
+                                                className="min-h-[120px] font-mono text-sm"
+                                            />
+                                            {fieldState.invalid && (
+                                                <FieldError errors={[fieldState.error]} />
+                                            )}
+                                            <FieldDescription className="text-xs">
+                                                JSON with template variables. Use {"{{variables}}"}
+                                                for simple values or {"{{json variables}}"} to strigify objects
+                                            </FieldDescription>
+                                        </Field>
+                                    )}
+                                />
+                            )}
+                        </FieldGroup>
+                    </div>
                     <DialogFooter className="mt-4">
                         <Button type="submit">Save</Button>
                     </DialogFooter>
